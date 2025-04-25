@@ -10,7 +10,7 @@ import {
 } from '@mui/material';
 import  axios  from 'axios';
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const Admin = () => {
   var baseurl = import.meta.env.VITE_API_BASE_URL
@@ -60,6 +60,9 @@ const Admin = () => {
     })
   }
   return (
+    <div>
+      <Button variant='contained'>
+        <Link to={'/d'} style ={{textDecoration:'none',color:'white'}}>Product Details</Link></Button>
     <Box
       sx={{
         maxWidth: 500,
@@ -168,6 +171,7 @@ const Admin = () => {
         </Button></Grid>
       
     </Box>
+    </div>
   );
 };
 
