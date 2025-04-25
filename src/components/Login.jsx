@@ -1,15 +1,38 @@
 import { Box, Button, Link, TextField, Typography } from '@mui/material'
+import axios from 'axios';
 import React, { useState } from 'react'
+import { useNavigate } from 'react-router-dom';
+
+
 
 const Login = () => {
     var[input,setInput] =useState({});
+    var baseurl = import.meta.env.VITE_API_BASE_URL
+    var navigate =useNavigate();
     const inpuHandler =(e)=>{
         // console.log(e.target.value);
         setInput({...input,[e.target.name]:e.target.value})
         console.log(input)
     };
   const addHandler=()=>{
-    console.log("Clicked")
+ 
+    axios
+    .post(`${baseurl}/api/login`,input)
+    .then((res)=>{
+      console.log(res.data)
+      sessionStorage.setItem("role",res.data.user.role)
+      if(res.status===200){
+      alert(res.data.message)
+    if(res.data.user.role=='admin'){
+      navigate('/adm')
+    }else{
+      navigate('/p')
+    }
+  }
+    })
+    .catch((err)=>{
+      console.log(err)
+    })
   }
   return (
     <div>

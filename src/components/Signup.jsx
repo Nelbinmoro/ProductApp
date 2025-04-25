@@ -1,16 +1,28 @@
 import { Box, Button, TextField, Typography } from '@mui/material'
+import axios from 'axios';
 import React, { useState } from 'react'
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const Signup = () => {
     var[input,setInput] =useState({});
+    var baseurl = import.meta.env.VITE_API_BASE_URL
+    var navigate =useNavigate();
     const inpuHandler =(e)=>{
         // console.log(e.target.value);
         setInput({...input,[e.target.name]:e.target.value})
-        console.log(input)
+        console.log("in",input)
     };
   const addHandler=()=>{
-    console.log("Clicked")
+    console.log("Clicked");
+    axios.post(`${baseurl}/api`,input)
+    .then((res)=>{
+      console.log(res)
+      alert(res.data.message);
+      navigate('/')
+    })
+    .catch((err)=>{
+      console.log(err)
+    })
   }
   return (
     <div>
