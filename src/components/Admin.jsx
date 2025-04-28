@@ -9,13 +9,21 @@ import {
   Typography,
 } from '@mui/material';
 import  axios  from 'axios';
-import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 
 const Admin = () => {
   var baseurl = import.meta.env.VITE_API_BASE_URL
-  
   var navigate =useNavigate();
+  var location = useLocation();
+  // console.log("loc",location.state.Product.pname)
+  useEffect(() => {
+    if (location.state && location.state.Product) {
+      console.log(location.state.Product.pname);
+    }
+  }, [location]);
+
+
   const [productData, setInput] = useState({
     pname: '',
     price: '',
@@ -24,7 +32,19 @@ const Admin = () => {
     images:[],
     available: true,
   });
+useEffect(()=>{
+  const {Product} = location.state || {};
+  if(location.state !== null){
+    setInput({
+    pname:Product.pname || "",
+    price:Product.price || "",
+    stock:Product.stock || "",
+    discription:Product.discription || "",
+    images:[]
+  })
+}
 
+},[location.state])
   const handleChange = (e) => {
     const { name, value } = e.target;
     setInput((prev) => ({ ...prev, [name]: value }));
@@ -50,6 +70,18 @@ const Admin = () => {
     productData.images.forEach((file)=>{
       formData.append("images",file)
     })
+   if(location.state!==null){
+    var id =location.state.Product._id
+    axios.put(`${baseurl}/p/${id}`,formData)
+    .then((res)=>{
+      alert(res.data.message)
+      navigate('/p')
+    })
+    .catch((err)=>{
+      console.log(err)
+    })
+   }else{
+
     axios.post(`${baseurl}/p`,formData)
     .then((res)=>{
       console.log(res) 
@@ -58,7 +90,11 @@ const Admin = () => {
     .catch((err)=>{
       console.log(err)
     })
+   }
   }
+  
+
+
   return (
     <div>
       <Button variant='contained'>
@@ -111,7 +147,7 @@ const Admin = () => {
           variant='outlined'
           margin='normal'
           name='discription'
-          value={productData.description}
+          value={productData.discription}
           onChange={handleChange}
           multiline
           rows={3}
